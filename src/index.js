@@ -1,7 +1,7 @@
-import axios from "axios";
-import Notiflix from "notiflix";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import axios from "axios";
+import Notiflix from "notiflix";
 
 
 
@@ -59,38 +59,53 @@ function searchByForm(e) {
 function createMarkup(data) {
         const { largeImageURL ,webformatURL, tags, likes, views, comments, downloads } = data;
 
-  return ` <a href="${largeImageURL}" > <div class="photo-card">
+        return ` 
+        <div class="photo-card"> 
+        <a onclick="return false" href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" width="200px" />
+        </a>
+        <div class="info">
+            <p class="info-item">
+                <b>${likes}</b>
+            </p>
+            <p class="info-item">
+                <b>${views}</b>
+            </p>
+            <p class="info-item">
+                <b>${comments}</b>
+            </p>
+            <p class="info-item">
+                <b>${downloads}</b>
+            </p>
+        </div>
+    </div>
 
-  <img src="${webformatURL}" alt="${tags}" loading="lazy"  width = "200px"/> 
-  
-  <div class="info">
-    <p class="info-item">
-      <b>${likes}</b>
-    </p>
-    <p class="info-item">
-      <b>${views}</b>
-    </p>
-    <p class="info-item">
-      <b>${comments}</b>
-    </p>
-    <p class="info-item">
-      <b>${downloads}</b>
-    </p>
-  </div>
-</div>
-</a>
-   
-     `
+`
     
 };
+
+
 
 function addImageOnClickLoadMore() {
     getImageArray()
       .then((data) => {
           const markup = data.hits.map(item => createMarkup(item)).join('');
         gallery.insertAdjacentHTML('beforeend', markup);
-          console.log(data.totalHits);
-          
+        
+        lightbox.refresh();
+        console.log(data.totalHits);
+
+        const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+
+
+
           const totalPages = data.totalHits / per_page;
           if (page >= totalPages) {
             loadMore.classList.add('is-hidden');
@@ -101,9 +116,7 @@ function addImageOnClickLoadMore() {
         .catch((error) => console.log(error));
 }
 
+
 let lightbox = new SimpleLightbox('.gallery a', { 
-    captionsData: 'alt',
-    captionDelay : 250,
- });
-
-
+  captionDelay : 250,
+});
