@@ -1,5 +1,9 @@
 import axios from "axios";
 import Notiflix from "notiflix";
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
+
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
@@ -8,17 +12,18 @@ const input = document.querySelector('input');
 const API_KEY = '38529296-de6c3fac31b2614a8135b6c10';
 const gallery = document.querySelector('.gallery');
 const loadMore = document.querySelector('.load-more');
-let page = 1;
+let  page = 1;
 let per_page = 40;
 let isAlertVisible = false;
 
 
 form.addEventListener('submit', searchByForm);
 loadMore.addEventListener('click', addImageOnClickLoadMore);
+loadMore.classList.add('is-hidden');
 
 const getImageArray = async () => {
     const value = input.value
-    const URL = `?key=${API_KEY}&q=${value}&image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40`;
+    const URL = `?key=${API_KEY}&q=${value}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${per_page}`;
     try {
         const { data } = await axios(`${URL}`);
         console.log(data);
@@ -40,7 +45,11 @@ function searchByForm(e) {
       
         
         gallery.innerHTML = data.hits.map(item => createMarkup(item))
-        console.log(data.total)
+      console.log(data.total)
+      loadMore.classList.remove('is-hidden');
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits } images.`);
+      
+
     }
     )   
 }
@@ -48,10 +57,12 @@ function searchByForm(e) {
 
 
 function createMarkup(data) {
-        const { webformatURL, tags, likes, views, comments, downloads } = data;
+        const { largeImageURL ,webformatURL, tags, likes, views, comments, downloads } = data;
 
-    return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy"  width = "200px"/>
+  return ` <a href="${largeImageURL}" > <div class="photo-card">
+
+  <img src="${webformatURL}" alt="${tags}" loading="lazy"  width = "200px"/> 
+  
   <div class="info">
     <p class="info-item">
       <b>${likes}</b>
@@ -66,33 +77,33 @@ function createMarkup(data) {
       <b>${downloads}</b>
     </p>
   </div>
-</div>`  
+</div>
+</a>
+   
+     `
     
 };
-        
 
-function addImageOnClickLoadMore(data) {
-    const totalPages = data.total / per_page;
+function addImageOnClickLoadMore() {
+    getImageArray()
+      .then((data) => {
+          const markup = data.hits.map(item => createMarkup(item)).join('');
+        gallery.insertAdjacentHTML('beforeend', markup);
+          console.log(data.totalHits);
+          
+          const totalPages = data.totalHits / per_page;
+          if (page >= totalPages) {
+            loadMore.classList.add('is-hidden');
+            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+          }
+          page += 1;
+        })
+        .catch((error) => console.log(error));
+}
 
-    if (page > totalPages) {
-         loadMore.style.display = 'none';
-    return console.log('кінець!');
-  }
-  
-  getImageArray()
-  .then((data) => {
-        gallery.innerHTML = data.hits.map(item => createMarkup(item))
-        console.log(data.total)
-        // Increase the group number
-        page += 1;
-
-      // Replace button text after first request
-      if (page > 1) {
-        loadMore.textContent = "Fetch more posts";
-      }
-    })
-    .catch((error) => console.log(error));
-};
-
+let lightbox = new SimpleLightbox('.gallery a', { 
+    captionsData: 'alt',
+    captionDelay : 250,
+ });
 
 
