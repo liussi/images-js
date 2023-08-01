@@ -17,6 +17,7 @@ let per_page = 40;
 let isAlertVisible = false;
 
 
+
 form.addEventListener('submit', searchByForm);
 loadMore.addEventListener('click', addImageOnClickLoadMore);
 loadMore.classList.add('is-hidden');
@@ -34,25 +35,28 @@ const getImageArray = async () => {
 }
 
 
+
 function searchByForm(e) {
     e.preventDefault();
-    
+
     // console.log(e.currentTarget.elements)
     getImageArray().then(data => {
         if (data.hits.length === 0) {
             return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }
-      
         
         gallery.innerHTML = data.hits.map(item => createMarkup(item))
-      console.log(data.total)
       loadMore.classList.remove('is-hidden');
-      Notiflix.Notify.success(`Hooray! We found ${data.totalHits } images.`);
-      
+    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
-    }
-    )   
+})   
+
+ 
+
 }
+let lightbox = new SimpleLightbox('.gallery a', { 
+captionDelay : 250,
+});
 
 
 
@@ -88,12 +92,9 @@ function createMarkup(data) {
 
 function addImageOnClickLoadMore() {
     getImageArray()
-      .then((data) => {
+        .then((data) => {
           const markup = data.hits.map(item => createMarkup(item)).join('');
         gallery.insertAdjacentHTML('beforeend', markup);
-        
-        lightbox.refresh();
-        console.log(data.totalHits);
 
         const { height: cardHeight } = document
   .querySelector(".gallery")
@@ -103,8 +104,9 @@ window.scrollBy({
   top: cardHeight * 2,
   behavior: "smooth",
 });
-
-
+      lightbox.refresh();
+ 
+        console.log(data.totalHits);
 
           const totalPages = data.totalHits / per_page;
           if (page >= totalPages) {
@@ -112,11 +114,9 @@ window.scrollBy({
             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
           }
           page += 1;
+         
         })
         .catch((error) => console.log(error));
 }
 
-
-let lightbox = new SimpleLightbox('.gallery a', { 
-  captionDelay : 250,
-});
+    
