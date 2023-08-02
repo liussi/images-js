@@ -21,7 +21,7 @@ async function searchByForm(e) {
         if (data.totalHits === 0 || searchQuery === '') {
             return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }
-        gallery.innerHTML = data.hits.map(item => createMarkup(item));
+        gallery.innerHTML = data.hits.map(item => createMarkup(item)).join('');
                
       lightbox.refresh();
 
