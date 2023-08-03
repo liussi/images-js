@@ -11,96 +11,25 @@ loadMore.classList.add('is-hidden');
 
 let currentPage = 1;
 
-// async function searchByForm(e) {
-//     e.preventDefault();
-
-//     try {
-//         gallery.innerHTML = '';
-//         const data = await getImageArray();
-//         const searchQuery = e.target.firstElementChild.value.trim();
-     
-
-//         if (data.totalHits === 0 || searchQuery === '') {
-//             return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-//         }
-//         gallery.innerHTML = data.hits.map(item => createMarkup(item));
-//       lightbox = new SimpleLightbox('.gallery a', { 
-// captionDelay : 250,
-// });
-
-        
-//         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-
-// const totalPages = data.totalHits / per_page;
-// if (page >= totalPages) {
-//     loadMore.classList.add('is-hidden');
-//     return Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-// }
-
-// loadMore.classList.remove('is-hidden');
-   
-//     } catch(error) {
-//         console.log(error);
-//         gallery.innerHTML = '';
-//     }
-
-
-// }
-
-
-
-
-
-
-
-// async function addImageOnClickLoadMore() {
-//     try {
-//         const data = await getImageArray();
-//         const markup = data.hits.map(item => createMarkup(item)).join('');
-//         gallery.insertAdjacentHTML('beforeend', markup);
-       
-//         lightbox.refresh();
-      
-//         const { height: cardHeight } = document
-//             .querySelector(".gallery")
-//             .firstElementChild.getBoundingClientRect();
-
-//         window.scrollBy({
-//             top: cardHeight * 2,
-//             behavior: "smooth",
-//         });
-          
-        
-// const totalPages = data.totalHits / per_page;
-//         if (page >= totalPages) {
-//             loadMore.classList.add('is-hidden');
-//             return Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-//         }
-//         page += 1;
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
 
 async function searchByForm(e) {
+
     e.preventDefault();
-currentPage = 1;
+    currentPage = 1;
+
     try {
         gallery.innerHTML = '';
         const data = await getImageArray();
         const searchQuery = e.target.firstElementChild.value.trim();
 
         if (data.totalHits === 0 || searchQuery === '') {
+            loadMore.classList.add('is-hidden');
             return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }
-        gallery.innerHTML = data.hits.map(item => createMarkup(item));
-                
- 
-      
-  lightbox.refresh();
-        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
+        gallery.innerHTML = data.hits.map(item => createMarkup(item));
+        lightbox.refresh();
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
         loadMore.classList.remove('is-hidden');
 
     } catch (error) {
@@ -113,31 +42,22 @@ currentPage = 1;
 async function addImageOnClickLoadMore() {
     
     currentPage += 1;
-    console.log(currentPage);
+
     try {
         const data = await getImageArray(currentPage);
         const markup = data.hits.map(item => createMarkup(item)).join('');
         gallery.insertAdjacentHTML('beforeend', markup);
        
-      
 
   lightbox.refresh();
-        const { height: cardHeight } = document
-            .querySelector(".gallery")
-            .firstElementChild.getBoundingClientRect();
-
-        window.scrollBy({
-            top: cardHeight * 2,
-            behavior: "smooth",
-        });
+  createScroll();
 
         const totalPages = data.totalHits / per_page;
-        if (page >= totalPages) {
+        
+        if (currentPage >= totalPages) {
             loadMore.classList.add('is-hidden');
              Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
         }
-
-         console.log(page);
 
     } catch (error) {
         console.log(error);
@@ -151,3 +71,14 @@ async function addImageOnClickLoadMore() {
 let lightbox = new SimpleLightbox('.gallery a', { 
 captionDelay : 250,
 });
+
+function createScroll() {
+    const { height: cardHeight } = document
+    .querySelector(".gallery")
+    .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+    top: cardHeight * 2,
+    behavior: "smooth",
+});
+}
