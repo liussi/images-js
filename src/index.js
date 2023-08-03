@@ -9,8 +9,6 @@ form.addEventListener('submit', searchByForm);
 loadMore.addEventListener('click', addImageOnClickLoadMore);
 loadMore.classList.add('is-hidden');
 
-// let currentPage = 1;
-
 
 async function searchByForm(e) {
 
@@ -64,8 +62,6 @@ async function addImageOnClickLoadMore() {
     }
      
 }
-
-     
 
 
 let lightbox = new SimpleLightbox('.gallery a', { 
