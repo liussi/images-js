@@ -2,13 +2,13 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from "notiflix";
 import { createMarkup } from "./create-markup";
-import {form, gallery, loadMore, per_page, currentPage} from './variables.js';
+import {form, gallery, loadMore, per_page} from './variables.js';
 import { getImageArray } from "./get-api";
 
 form.addEventListener('submit', searchByForm);
 loadMore.addEventListener('click', addImageOnClickLoadMore);
 loadMore.classList.add('is-hidden');
-
+let currentPage = 1;
 
 async function searchByForm(e) {
 
