@@ -9,7 +9,7 @@ form.addEventListener('submit', searchByForm);
 loadMore.addEventListener('click', addImageOnClickLoadMore);
 loadMore.classList.add('is-hidden');
 
-// let currentPage = 1;
+let currentPage = 1;
 
 // async function searchByForm(e) {
 //     e.preventDefault();
@@ -85,7 +85,7 @@ loadMore.classList.add('is-hidden');
 
 async function searchByForm(e) {
     e.preventDefault();
-
+currentPage = 1;
     try {
         gallery.innerHTML = '';
         const data = await getImageArray();
@@ -97,16 +97,9 @@ async function searchByForm(e) {
         gallery.innerHTML = data.hits.map(item => createMarkup(item));
                 
  
-        lightbox = new SimpleLightbox('.gallery a', { 
-captionDelay : 250,
-});
+      
+  lightbox.refresh();
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-
-        const totalPages = data.totalHits / per_page;
-        if (page >= totalPages) {
-            loadMore.classList.add('is-hidden');
-            return Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-        }
 
         loadMore.classList.remove('is-hidden');
 
@@ -115,14 +108,14 @@ captionDelay : 250,
         gallery.innerHTML = '';
     }
      
-console.log(page);
 }
 
 async function addImageOnClickLoadMore() {
     
-    page += 1;
+    currentPage += 1;
+    console.log(currentPage);
     try {
-        const data = await getImageArray(page);
+        const data = await getImageArray(currentPage);
         const markup = data.hits.map(item => createMarkup(item)).join('');
         gallery.insertAdjacentHTML('beforeend', markup);
        
@@ -141,7 +134,7 @@ async function addImageOnClickLoadMore() {
         const totalPages = data.totalHits / per_page;
         if (page >= totalPages) {
             loadMore.classList.add('is-hidden');
-            return Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
         }
 
          console.log(page);
