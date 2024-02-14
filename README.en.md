@@ -18,7 +18,7 @@ This project was created to provide a convenient way to search for photos using 
  ![page](./assets/img-2.png).
  
 ## SimpleLightbox Library:
- The project utilizes the SimpleLightbox library to create a full-fledged photo gallery. Each image card is wrapped in a link as specified in the documentation, and the refresh() method is called after adding a new group of image cards to refresh the gallery.
+ The project utilizes the SimpleLightbox library to create a full-fledged photo gallery.
  ![page](./assets/img-3.png).
 
 ## Page Scrolling:
